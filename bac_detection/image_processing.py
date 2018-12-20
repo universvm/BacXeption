@@ -9,10 +9,12 @@ from skimage.segmentation import clear_border
 
 
 def load_images(filename, data_folder):
-    """ Load + Pre-process bacterial images from folder. """
-
-    # TODO: Filtering system file:
-    # if not filename.startswith('.'):
+    """ Load + Pre-process bacterial images from folder.
+    :param filename: str of image filename
+    :param data_folder: folder_path to filename
+    :return thresh_image: image array with
+    """
+    print(f'Thresholding {filename}...')
 
     input_bac = io.imread(data_folder + filename, flatten=True)
     # input_bac = exposure.rescale_intensity(input_bac, in_range=(
@@ -25,11 +27,9 @@ def load_images(filename, data_folder):
     bw = closing(input_bac > thresh, square(3))
 
     # Remove artifacts connected to image border:
-    cleared = clear_border(bw)
+    thresh_image = clear_border(bw)
 
-    print('Image ' + filename + ' imported and cleaned successfully!')
-
-    return cleared, input_bac
+    return thresh_image, input_bac
 
 
 def preprocess_cutout(cutouts_list):
@@ -56,7 +56,7 @@ def rectify_bac_img(image_array, original_img):
     :param image_array: Array of image with thresholding
     :param original_img: Original array
     :return: coords_list: Array of integers (format x1, y1, width, height)
-            cutouts_list: Array of bacteria cutouts from the original image
+    :return: cutouts_list: Array of bacteria cutouts from the original image
     """
 
     # Create rectangles:
