@@ -5,8 +5,8 @@ from skimage.io import imread
 from bac_detection.image_processing import thresholding_img
 from bac_detection.image_processing import rectify_bac
 from bac_detection.image_processing import preprocess_cutout
-
 from bac_detection.output import outwrite_coords, outwrite_graph
+
 from test import predict_flatness
 
 if __name__ == '__main__':
