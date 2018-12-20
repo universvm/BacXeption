@@ -12,8 +12,6 @@ def thresholding_img(bac_image):
     :param bac_image: numpy array of bac image
     :return thresh_image: numpy array with Otsu thresholding
     """
-    # print(f'Thresholding {filename}...')
-
     # TODO: Hacky
     # input_bac = exposure.rescale_intensity(input_bac, in_range=(
     #     input_bac.min(), input_bac.max()))
