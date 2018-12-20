@@ -6,8 +6,8 @@ from bac_detection.image_processing import thresholding_img
 from bac_detection.image_processing import rectify_bac
 from bac_detection.image_processing import preprocess_cutout
 
-from neural_network.output import outwrite_coords, outwrite_graph
-from neural_network.test import predict_flatness
+from bac_detection.output import outwrite_coords, outwrite_graph
+from test import predict_flatness
 
 if __name__ == '__main__':
     # TODO: create config.py
