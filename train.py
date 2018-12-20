@@ -126,10 +126,6 @@ def augmentor_data(X_train, y_train):
 
 
 if __name__ == "__main__":
-
-    # Set random seed:
-    np.random.seed(3)
-
     # Define data directory:
     data_dir = "drive/Colab Notebooks/Pilizota/data/expanded_3/"
     print('Data directory is ' + data_dir)
