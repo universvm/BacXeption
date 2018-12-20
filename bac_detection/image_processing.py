@@ -33,18 +33,21 @@ def load_images(filename, data_folder):
 
 
 def preprocess_cutout(cutouts_list):
-    """ Necessary cutouts pre-processing for Neural Network """
+    """ Necessary cutouts pre-processing for Neural Network
+    :param cutouts_list: Python list with bacteria cutouts
+    :return normalized_cutouts: 4-d numpy array (n, 180, 180, 1)
+    """
 
     # Convert to numpy array:
-    cutouts_list = np.array(cutouts_list)
+    normalized_cutouts = np.array(cutouts_list)
 
     # Reshape numpy array:
-    cutouts_list = cutouts_list.reshape(len(cutouts_list), 180, 180, 1)
+    normalized_cutouts = normalized_cutouts.reshape(len(cutouts_list), 180, 180, 1)
 
     # Normalize data:
-    cutouts_list = np.array(cutouts_list).astype('float64')
+    normalized_cutouts = np.array(normalized_cutouts).astype('float64')
 
-    return cutouts_list
+    return normalized_cutouts
 
 
 def rectify_bac_img(image_array, original_img):
