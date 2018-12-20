@@ -106,3 +106,4 @@ venv.bak/
 .mypy_cache/
 .idea/
 .DS_STORE
+/neural_network/test/
