@@ -1,140 +1,94 @@
 import os
-import numpy as np
 
-from keras.callbacks import CSVLogger
-from keras.utils import np_utils
+from keras.callbacks import CSVLogger, TensorBoard
 from sklearn.model_selection import train_test_split
-from skimage import transform
-from skimage.io import imread
 
-from bac_detection.image_processing import thresholding_img
-from bac_detection.image_processing import preprocess_cutout
 from neural_network.network_structure import build_network
+from neural_network.image_generator import DataGenerator
 
 
-def load_data(data_dir):
-    # TODO: variable in config
-    class_list = ['acceptable', 'discarded']
+def load_ids(data_dir, n_classes):
 
     # Main Input Lists:
-    images = []
-    labels = []
+    id_dict = {}  # {ID: label}
 
-    # looping twice (flat and not_flat):
-    for c in range(len(class_list)):
+    # Main Loop:
+    for c in range(n_classes):
 
         # Go through directory (either flat or not_flat:
         for (dirpath, dirnames, filenames) in os.walk \
-                (data_dir + class_list[c] + '/'):
+                (data_dir + str(c) + '/'):
 
-            print(dirpath, dirnames, filenames)
             # Loop through images:
             for i in range(len(filenames)):
                 # TODO: variable in config
                 if filenames[i].endswith(".tiff"):
+                    id_dict[filenames[i]] = c
 
-                    # Reading image:
-                    current_bac = imread(dirpath + filenames[i], as_gray=True)
-                    thresh_image = thresholding_img(current_bac)
-
-                    # Resize multiplier:
-                    thresh_image = transform.resize(thresh_image, (180, 180, 1))
-
-                    images.append(thresh_image)
-                    labels.append(c)
-
-    return images, labels
+    return id_dict
 
 
-def split_data(images, labels):
+def split_data(id_dict):
     """ Divide the data into train and test set """
     # TODO: variable in config
-    X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
+    X_train, X_test = train_test_split(list(id_dict.keys()), test_size=0.2)
 
-    return X_train, X_test, y_train, y_test
-
-
-def augment_data(X_train, y_train):
-    """
-
-    :param X_train: 4d np array with normalized cutouts
-    :param y_train: python array with int 0 or 1
-    :return X_train: augmented X_train 8x length
-    :return y_train: augmented y_train 8x length
-    """
-
-    print("Current number of training images is " + str(len(X_train)))
-    print("Length of y_train " + str(len(y_train)))
-
-    # Add rotations:
-    for i in range(len(X_train)):
-        for rot in range(1, 4):
-            rotated = np.rot90(X_train[i, :, :, :], rot)
-
-            X_train = np.append(X_train, np.asarray([rotated]), axis=0)
-            y_train.append(y_train[i])
-
-    # Add flip:
-    for i in range(len(X_train)):
-        fliplr_bac = np.fliplr(X_train[i, :, :, :])
-        flipud_bac = np.flipud(X_train[i, :, :, :])
-
-        X_train = np.append(X_train, np.asarray([fliplr_bac]), axis=0)
-        y_train.append(y_train[i])
-        X_train = np.append(X_train, np.asarray([flipud_bac]), axis=0)
-        y_train.append(y_train[i])
-
-    print("The current amount of training images is " + str(len(X_train)))
-    print("Length of y_train " + str(len(y_train)))
-
-    return X_train, y_train
+    return X_train, X_test
 
 
 if __name__ == "__main__":
     # Define data directory:
     data_dir = "data/"
-    epochs = 300
+    EPOCHS = 300
+    INPUT_DIM = (180, 180, 1)
+    BATCH_SIZE = 32
+    N_CLASSES = 2
 
     print("Data directory is " + data_dir)
 
     # Load data:
     print("Loading data...")
-    images, labels = load_data(data_dir)
-    print("Data loaded successfully.")
-
-    # Reshape:
-    images = preprocess_cutout(images)
+    id_dict = load_ids(data_dir, N_CLASSES)
 
     # Split data: (before augmentation to avoid bias)
     print('Splitting in train and test data...')
-    X_train, X_test, y_train, y_test = split_data(images, labels)
+    X_train, X_test = split_data(id_dict)
 
-    # Normalize data:
-    X_train, y_train = augment_data(X_train, y_train)
-    X_test, y_test = augment_data(X_test, y_test)
-    # TODO: refactor:
-    # 1-hot encoding:
-    y_train = np.array(y_train)
-    y_test = np.array(y_test)
-    y_train = np_utils.to_categorical(y_train)
-    y_test = np_utils.to_categorical(y_test)
+    # Reshape:
+    # images = preprocess_cutout(images)
+    # TODO: Call generator
+    train_generator = DataGenerator(X_train, id_dict, dim=INPUT_DIM,
+                                    batch_size=BATCH_SIZE,
+                                    n_classes=N_CLASSES,
+                                    train=True,
+                                    shuffle=True)
+    validation_generator = DataGenerator(X_test, id_dict, dim=INPUT_DIM,
+                                         batch_size=BATCH_SIZE,
+                                         n_classes=N_CLASSES,
+                                         train=True,
+                                         shuffle=True)
 
     # Create CNN model
     print("Building CNN...")
     model = build_network()
 
+    # Loggers:
+    # TODO Refactor in config
+    csv_logger = CSVLogger('neural_network/models/log.csv', append=True,
+                           separator=',')
+    tensor_logger = TensorBoard(log_dir='neural_network/models/',
+                                histogram_freq=0, write_graph=True,
+                                write_images=True)
+
     # Test model:
-    keras_logger = CSVLogger('log.csv', append=True, separator=',')
-    model.fit(X_train, y_train, validation_data=(X_test, y_test),
-              epochs=epochs, batch_size=100, callbacks=[keras_logger])
-
-    # Final evaluation of the model:
-    scores = model.evaluate(X_test, y_test, verbose=1)
-
-    print("Accuracy: {0}".format(scores[1] * 100))
+    model.fit_generator(generator=train_generator,
+                        validation_data=validation_generator,
+                        epochs=EPOCHS,
+                        callbacks=[csv_logger, tensor_logger])
 
     # serialize model to JSON
     model_json = model.to_json()
+    # TODO Refactor in config
     with open("neural_network/models/model.json", "w") as json_file:
         json_file.write(model_json)
         # serialize weights to HDF5
