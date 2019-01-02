@@ -7,7 +7,7 @@ from bac_detection.image_processing import rectify_bac
 from bac_detection.image_processing import preprocess_cutout
 from bac_detection.output import outwrite_coords, outwrite_graph
 
-from test import predict_flatness
+from predict import predict_flatness
 
 if __name__ == '__main__':
     # TODO: create config.py
@@ -18,6 +18,8 @@ if __name__ == '__main__':
     output_coordinates = True
 
     print(f'Loading data from {data_path}')
+
+    id_dict = {}
 
     # Loop through all images:
     for filename in os.listdir(data_path):
