@@ -7,7 +7,7 @@ from bac_detection.image_processing import rectify_bac
 from bac_detection.image_processing import preprocess_cutout
 from bac_detection.output import outwrite_coords, outwrite_graph
 
-from predict import predict_flatness
+from bac_detection.predict import predict_flatness
 
 if __name__ == '__main__':
     # TODO: create config.py
