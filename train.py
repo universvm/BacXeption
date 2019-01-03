@@ -22,7 +22,7 @@ def load_ids(data_dir, n_classes):
             # Loop through images:
             for i in range(len(filenames)):
                 # TODO: variable in config
-                if filenames[i].endswith('.tiff') or filenames[i].endswith('.tiff'):
+                if filenames[i].endswith('.tiff') or filenames[i].endswith('.tif'):
                     id_dict[filenames[i]] = c
 
     return id_dict
