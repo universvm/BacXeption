@@ -7,7 +7,7 @@ from neural_network.network_structure import build_network
 from neural_network.image_generator import DataGenerator
 
 
-def load_ids(TRAIN_IMG_PATH, N_CLASSES):
+def _load_ids(TRAIN_IMG_PATH, N_CLASSES):
 
     # Main Input Lists:
     id_dict = {}  # {ID: label}
@@ -27,7 +27,7 @@ def load_ids(TRAIN_IMG_PATH, N_CLASSES):
     return id_dict
 
 
-def split_data(id_dict):
+def _split_data(id_dict):
     """ Divide the data into train and test set """
     X_train, X_test = train_test_split(list(id_dict.keys()), test_size=0.2)
 
@@ -39,11 +39,11 @@ if __name__ == "__main__":
 
     # Load data:
     print("Loading data...")
-    id_dict = load_ids(TRAIN_IMG_PATH, N_CLASSES)
+    id_dict = _load_ids(TRAIN_IMG_PATH, N_CLASSES)
 
     # Split data: (before augmentation to avoid bias)
     print("Splitting in train and test data...")
-    X_train, X_test = split_data(id_dict)
+    X_train, X_test = _split_data(id_dict)
 
     train_generator = DataGenerator(X_train, id_dict, dim=INPUT_DIM,
                                     batch_size=BATCH_SIZE,
