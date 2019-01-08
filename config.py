@@ -1,4 +1,5 @@
 import os
+
 from datetime import datetime
 
 # Project:
@@ -11,10 +12,13 @@ FORMAT_IMG = ('.tiff', '.tif')
 INPUT_DIM = (180, 180, 1)
 
 # Network:
-TRAIN_IMG_PATH = os.path.join(ROOT_DIR, PROJECT_NAME, 'data')
-EPOCHS = 300
 BATCH_SIZE = 32
+EPOCHS = 300
+LOSS_FUNC = 'mean_squared_error'
+METRICS = ['accuracy']
 N_CLASSES = 2
+OPTIMIZER = 'adam'
+TRAIN_IMG_PATH = os.path.join(ROOT_DIR, PROJECT_NAME, 'data')
 
 # Logger:
 LOG_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'models', START_DATE)
@@ -22,6 +26,6 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 
 # Test:
-TEST_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'neural_network', 'test')
-OUTPUT_GRAPH = True
+TEST_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'to_predict')
 OUTPUT_COORDS = True
+OUTPUT_GRAPH = True
