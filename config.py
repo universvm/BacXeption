@@ -9,7 +9,7 @@ START_DATE = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # Images:
 FORMAT_IMG = ('.tiff', '.tif')
-INPUT_DIM = (180, 180, 1)
+INPUT_DIM = (180, 180, 3)
 
 # Network:
 BATCH_SIZE = 32

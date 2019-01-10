@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     # Create CNN model
     print("Building CNN...")
-    model = build_network()
+    model = build_network(INPUT_DIM, N_CLASSES, OPTIMIZER, LOSS_FUNC, METRICS)
 
     # Loggers:
     csv_logger = CSVLogger(os.path.join(LOG_DIR, 'log.csv'),
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     # Test model:
     model.fit_generator(generator=train_generator,
                         validation_data=validation_generator,
+                        workers=0,
                         epochs=EPOCHS,
                         callbacks=[csv_logger, tensor_logger])
 
