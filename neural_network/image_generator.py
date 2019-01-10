@@ -61,7 +61,8 @@ class DataGenerator(keras.utils.Sequence):
 
             current_img = imread(os.path.join('data', str(self.id_dict[ID]),
                                               list_IDs_temp[i]),
-                                 as_gray=True)
+                                 # as_gray=True)
+                                 as_gray=False)
             current_img = thresholding_img(current_img)
             current_img = transform.resize(current_img, self.dim)
 
@@ -78,29 +79,31 @@ class DataGenerator(keras.utils.Sequence):
 
         :param X_train: 4d np array with normalized cutouts
         :param y_train: python array with int 0 or 1
-        :return X_train: augmented X_train 8x length
-        :return y_train: augmented y_train 8x length
+        :return X_train_augmented: augmented X_train 8x length
+        :return y_train_augmented: augmented y_train 8x length
         """
 
-        print("Current number of training images is " + str(len(X_train)))
-        print("Length of y_train " + str(len(y_train)))
+        print(f"Batch images BEFORE augmentation: {len(X_train)}")
 
-        # TODO: refactor for loops
-        # Add rotations:
-        for i in range(len(X_train)):
-            for rot in range(1, 4):
-                rotated = np.rot90(X_train[i, :, :, :], rot)
+        # Rotate train images by 90 degrees:
+        X_train_rot90 = np.rot90(X_train, 1, (1, 2))  # (1,2) is X and Y in img
+        X_train_rot180 = np.rot90(X_train, 2, (1, 2))
+        X_train_rot270 = np.rot90(X_train, 3, (1, 2))
 
-                X_train = np.append(X_train, np.asarray([rotated]), axis=0)
-                y_train = np.append(y_train, np.asarray([y_train[i]]), axis=0)
+        # Stack train arrays:
+        X_train_rot = np.concatenate((X_train,
+                                     X_train_rot90,
+                                     X_train_rot180,
+                                     X_train_rot270), axis=0)
+        # Flip horizontal:
+        X_train_augmented = np.concatenate((X_train_rot,
+                                          X_train_rot[..., ::-1, :]),
+                                         axis=0)
 
-        # Add flip:
-        for i in range(len(X_train)):
-            fliplr_bac = np.fliplr(X_train[i, :, :, :])
-            flipud_bac = np.flipud(X_train[i, :, :, :])
-            X_train = np.append(X_train, np.asarray([fliplr_bac]), axis=0)
-            y_train = np.append(y_train, np.asarray([y_train[i]]), axis=0)
-            X_train = np.append(X_train, np.asarray([flipud_bac]), axis=0)
-            y_train = np.append(y_train, np.asarray([y_train[i]]), axis=0)
+        y_train_augmented = np.concatenate([y_train, y_train, y_train, y_train,
+                                            y_train, y_train, y_train, y_train]
+                                           , axis=0)
 
-        return X_train, y_train
+        print(f"Batch images AFTER augmentation: {len(X_train_augmented)}")
+
+        return X_train_augmented, y_train_augmented
