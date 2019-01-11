@@ -97,12 +97,9 @@ class DataGenerator(keras.utils.Sequence):
                                      X_train_rot270), axis=0)
         # Flip horizontal:
         X_train_augmented = np.concatenate((X_train_rot,
-                                          X_train_rot[..., ::-1, :]),
-                                         axis=0)
+                                            X_train_rot[..., ::-1, :]), axis=0)
 
-        y_train_augmented = np.concatenate([y_train, y_train, y_train, y_train,
-                                            y_train, y_train, y_train, y_train]
-                                           , axis=0)
+        y_train_augmented = np.concatenate([y_train]*8, axis=0)
 
         print(f"Batch images AFTER augmentation: {len(X_train_augmented)}")
 
