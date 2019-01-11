@@ -12,7 +12,7 @@ FORMAT_IMG = ('.tiff', '.tif')
 INPUT_DIM = (180, 180, 3)
 
 # Network:
-BATCH_SIZE = 32
+BATCH_SIZE = 10
 EPOCHS = 300
 LOSS_FUNC = 'mean_squared_error'
 METRICS = ['accuracy']

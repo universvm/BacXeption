@@ -1,8 +1,8 @@
 from keras.applications import Xception
 from keras.layers import Dense, Flatten, Input
 from keras.layers.convolutional import Conv2D
-from keras.layers.pooling import MaxPooling2D
-from keras.models import Model
+from keras.layers.pooling import MaxPooling2D, GlobalAveragePooling2D
+from keras.models import Model, Sequential
 
 
 def convolve(input_layer, conv_depth, kernel_size, pool_size):
@@ -52,8 +52,11 @@ def convolve(input_layer, conv_depth, kernel_size, pool_size):
 def build_network(inp_shape, num_classes, optimizer, loss_func, metrics):
     """ Main CNN to predict flat or not_flat  """
 
-    model = Xception(weights=None, input_shape=inp_shape, classes=num_classes)
-
+    model = Sequential()
+    model.add(Xception(weights='imagenet', input_shape=inp_shape,
+                       classes=num_classes, include_top=False))
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
     model.compile(loss=loss_func, optimizer=optimizer, metrics=metrics)
 
     # Output summary:
