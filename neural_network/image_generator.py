@@ -5,7 +5,7 @@ import os
 from skimage import transform
 from skimage.io import imread
 
-from bac_detection.image_processing import thresholding_img
+from bac_detection.image_processing import normalize_img
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -63,7 +63,7 @@ class DataGenerator(keras.utils.Sequence):
                                               list_IDs_temp[i]),
                                  # as_gray=True)
                                  as_gray=False)
-            current_img = thresholding_img(current_img)
+            current_img = normalize_img(current_img)
             current_img = transform.resize(current_img, self.dim)
 
             X[i] = current_img

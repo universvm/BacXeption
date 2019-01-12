@@ -1,10 +1,23 @@
 import numpy as np
 
 from skimage import transform
+from skimage.exposure import rescale_intensity
 from skimage.filters import threshold_otsu
 from skimage.morphology import closing, square
 from skimage.measure import label, regionprops
 from skimage.segmentation import clear_border
+
+
+def normalize_img(input_img):
+    """
+    :param input_img: input numpy array of bac img
+    :return normalized_image: numpy array with rescaled intensity
+    """
+
+    normalized_image = rescale_intensity(input_img, in_range=(
+        input_img.min(), input_img.max()))
+
+    return normalized_image
 
 
 def thresholding_img(bac_image):
@@ -12,10 +25,6 @@ def thresholding_img(bac_image):
     :param bac_image: numpy array of bac image
     :return thresh_image: numpy array with Otsu thresholding
     """
-    # TODO: Hacky
-    # input_bac = exposure.rescale_intensity(input_bac, in_range=(
-    #     input_bac.min(), input_bac.max()))
-    bac_image = bac_image - bac_image.min()/1.05
 
     # Apply threshold:
     thresh = threshold_otsu(bac_image)
