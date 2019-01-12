@@ -69,10 +69,9 @@ class DataGenerator(keras.utils.Sequence):
             X[i] = current_img
 
         if self.train:
-            X_augmented, y_augmented = self.augment_data(X, y)
+            X, y = self.augment_data(X, y)
 
-        return X_augmented, keras.utils.to_categorical(y_augmented,
-                                                    num_classes=self.n_classes)
+        return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
 
     def augment_data(self, X_train, y_train):
         """
