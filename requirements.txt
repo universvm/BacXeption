@@ -20,7 +20,7 @@ protobuf==3.6.1
 pyparsing==2.3.0
 python-dateutil==2.7.5
 PyWavelets==1.0.1
-PyYAML==3.13
+PyYAML>=4.2b1
 scikit-image==0.14.1
 scikit-learn==0.20.2
 scipy==1.2.0
