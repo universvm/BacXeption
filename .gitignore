@@ -106,4 +106,4 @@ venv.bak/
 .mypy_cache/
 .idea/
 .DS_STORE
-to_predict/
+output/
