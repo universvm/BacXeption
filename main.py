@@ -6,9 +6,9 @@ from bac_detection.image_processing import normalize_img
 from bac_detection.image_processing import preprocess_cutout
 from bac_detection.image_processing import rectify_bac
 from bac_detection.image_processing import thresholding_img
-from bac_detection.output import outwrite_coords
-from bac_detection.output import outwrite_graph
-from bac_detection.predict import predict_flatness
+from predict.output import outwrite_coords
+from predict.output import outwrite_graph
+from predict.predict import predict_flatness
 
 
 if __name__ == '__main__':
@@ -32,13 +32,14 @@ if __name__ == '__main__':
 
             # Normalize cutouts for network dimensions:
             norm_cutouts = preprocess_cutout(cutouts_list, INPUT_DIM)
-            flat_results = predict_flatness(norm_cutouts, LOG_DIR,
+            flat_results = predict_flatness(norm_cutouts, MODEL_DIR,
                                             LOSS_FUNC,  OPTIMIZER, METRICS)
 
             filename = filename.split('.')[0]
 
             if OUTPUT_COORDS:
-                outwrite_coords(coords_list, flat_results, TEST_DIR, filename)
+                outwrite_coords(coords_list, flat_results, LOG_DIR, filename)
             if OUTPUT_GRAPH:
                 outwrite_graph(current_img, coords_list, flat_results,
-                               TEST_DIR, filename)
+                               LOG_DIR, filename, ACCEPTABLE_THRESHOLD,
+                               DISPLAY_GRAPH)
