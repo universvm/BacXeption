@@ -24,14 +24,14 @@ OPTIMIZER = 'adam'
 TRAIN_IMG_PATH = os.path.join(ROOT_DIR, PROJECT_NAME, 'data')
 
 # Logger:
-if TRAIN_MODE:
-    LOG_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'models', START_DATE)
-else:
-    LOG_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'models')
+LOG_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'output', START_DATE)
 os.makedirs(LOG_DIR, exist_ok=True)
 
 
 # Test:
-TEST_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'to_predict')
+ACCEPTABLE_THRESHOLD = 0.9  # Certainty required to classify result as 1
+MODEL_DIR = os.path.join(ROOT_DIR, PROJECT_NAME, 'model')
+TEST_DIR = os.path.join(TRAIN_IMG_PATH, 'test_data')
 OUTPUT_COORDS = True
 OUTPUT_GRAPH = True
+DISPLAY_GRAPH = True
