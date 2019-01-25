@@ -1,6 +1,6 @@
 <h1 align="center"><img src="/logo.png">
 
-BacXeption – Deep Learning for bacterial classification</h1>
+Deep Learning for bacterial classification</h1>
 
 # BacXeption
 
